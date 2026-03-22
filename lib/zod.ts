@@ -32,6 +32,10 @@ export const UploadSchema = z.object({
     .instanceof(File)
     .optional()
     .refine(
+      (file) => !file || file.size > 0,
+      "Cover image cannot be empty",
+    )
+    .refine(
       (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type),
       "Only JPEG, PNG, and WebP images are accepted",
     )

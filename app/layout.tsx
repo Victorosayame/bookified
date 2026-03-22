@@ -11,8 +11,8 @@ const ibmPlexSerif = IBM_Plex_Serif({
   display: "swap",
 });
 
-const monoSans = Mona_Sans({
-  variable: "--font-mono-sans",
+const monaSans = Mona_Sans({
+  variable: "--font-mona-sans",
   subsets: ["latin"],
   display: "swap",
 });
@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${ibmPlexSerif.variable} ${monoSans.variable} relative font-sans antialiased`}
+        className={`${ibmPlexSerif.variable} ${monaSans.variable} relative font-sans antialiased`}
       >
         <ClerkProvider>
           <Navbar />

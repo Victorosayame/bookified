@@ -17,8 +17,6 @@ const BookCard = ({ title, author, coverURL, slug }: BookCardProps) => {
               className="book-card-cover"
             />
           </div>
-        </figure>
-
         <figcaption className="book-card-meta">
           <h3 className="book-card-title">
             {title}
@@ -27,6 +25,8 @@ const BookCard = ({ title, author, coverURL, slug }: BookCardProps) => {
             {author}
           </p>
         </figcaption>
+        </figure>
+
       </article>
     </Link>
   )

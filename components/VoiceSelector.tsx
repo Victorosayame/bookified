@@ -1,13 +1,8 @@
 "use client";
 
 import { voiceOptions, voiceCategories } from "@/lib/constants";
+import { VoiceSelectorProps } from "@/types";
 import { FC } from "react";
-
-interface VoiceSelectorProps {
-  value: string;
-  onChange: (voiceId: string) => void;
-  disabled?: boolean;
-}
 
 const VoiceSelector: FC<VoiceSelectorProps> = ({
   value,
@@ -31,6 +26,7 @@ const VoiceSelector: FC<VoiceSelectorProps> = ({
         <div className="voice-selector-options">
           {voiceCategories.male.map((voiceKey) => {
             const voice = voiceOptions[voiceKey as keyof typeof voiceOptions];
+            if (!voice) return null;
             const isSelected = voice.id === value;
 
             return (
