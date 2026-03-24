@@ -12,12 +12,9 @@ interface LoadingOverlayProps {
 
 const LoadingOverlay: FC<LoadingOverlayProps> = ({
   isVisible,
-  title = "Processing Your Book",
+  title = "Synthesizing Your Book",
   steps = [
-    "Parsing PDF content",
-    "Generating cover image",
-    "Creating database entry",
-    "Finalizing upload",
+    "Please wait while we process your PDF and prepare your interactive experience.",
   ],
   currentStep = 0,
 }) => {
