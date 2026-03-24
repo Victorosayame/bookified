@@ -1,14 +1,19 @@
 import BookCard from '@/components/BookCard'
 import HeroSection from '@/components/HeroSection'
+import { getAllBooks } from '@/lib/actions/book.actions'
 import { sampleBooks } from '@/lib/constants'
 
-const Page = () => {
+const Page = async () => {
+    //fetch all books from the database and display them in the library section, sorted by most recent
+
+    const bookResults = await getAllBooks()
+    const books = bookResults.success ? bookResults.data ?? [] : [];
     return (
         <main className="wrapper container">
             <HeroSection />
 
             <div className="library-books-grid">
-        {sampleBooks.map((book) => (
+        {books.map((book) => (
             <BookCard key={book._id} title={book.title} author={book.author} coverURL={book.coverURL} slug={book.slug} />
         ))}
       </div>
