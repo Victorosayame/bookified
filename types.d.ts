@@ -74,6 +74,13 @@ export interface TextSegment {
     wordCount: number;
 }
 
+export interface BookCardProps {
+    title: string;
+    author: string;
+    coverURL: string;
+    slug: string;
+}
+
 export interface Messages {
     role: string;
     content: string;
