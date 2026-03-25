@@ -3,6 +3,9 @@ import HeroSection from '@/components/HeroSection'
 import { getAllBooks } from '@/lib/actions/book.actions'
 import { sampleBooks } from '@/lib/constants'
 
+//this will force a new fetch o fthe book data on every request, ensuring the library is always up to date with the latest books
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
     //fetch all books from the database and display them in the library section, sorted by most recent
 

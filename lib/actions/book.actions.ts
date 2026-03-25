@@ -6,6 +6,8 @@ import { escapeRegex, generateSlug, serializeData } from "../utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
 import mongoose from "mongoose";
+import { revalidatePath } from "next/cache";
+
 
 //fetch all book
 export const getAllBooks = async () => {
@@ -63,6 +65,10 @@ export const createBook = async (data: CreateBook) => {
     //TODO:check sub limit before creating a book
 
     const book = await Book.create({ ...data, slug, totalSegments: 0 });
+
+    revalidatePath("/");
+
+    
     return { success: true, data: serializeData(book) };
   } catch (error) {
     console.error("Error creating a book", error);
@@ -163,7 +169,7 @@ export const searchBookSegments = async (bookId: string, query: string, limit: n
         if (segments.length === 0) {
           const keywords = query.split(/\s+/).filter((k) => k.length > 2);
           const pattern = keywords.map(escapeRegex).join('|');
-          
+
             //if theres nothing in the keyword we do not want to match anything
             if (keywords.length === 0) {
                 return { success: true, data: [] };
