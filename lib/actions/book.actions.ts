@@ -161,8 +161,14 @@ export const searchBookSegments = async (bookId: string, query: string, limit: n
 
         // Fallback: regex search matching ANY keyword
         if (segments.length === 0) {
-            const keywords = query.split(/\s+/).filter((k) => k.length > 2);
-            const pattern = keywords.map(escapeRegex).join('|');
+          const keywords = query.split(/\s+/).filter((k) => k.length > 2);
+          const pattern = keywords.map(escapeRegex).join('|');
+          
+            //if theres nothing in the keyword we do not want to match anything
+            if (keywords.length === 0) {
+                return { success: true, data: [] };
+            }
+            
 
             segments = await BookSegment.find({
                 bookId: bookObjectId,

@@ -292,18 +292,22 @@ export function useVapi(book: IBook) {
           author: book.author,
           bookId: book._id,
         },
-        // voice: {
-        //     provider: '11labs' as const,
-        //     voiceId: getVoice(voice).id,
-        //     model: 'eleven_turbo_v2_5' as const,
-        //     stability: VOICE_SETTINGS.stability,
-        //     similarityBoost: VOICE_SETTINGS.similarityBoost,
-        //     style: VOICE_SETTINGS.style,
-        //     useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost,
-        // },
+        voice: {
+            provider: '11labs' as const,
+            voiceId: getVoice(voice).id,
+            model: 'eleven_turbo_v2_5' as const,
+            stability: VOICE_SETTINGS.stability,
+            similarityBoost: VOICE_SETTINGS.similarityBoost,
+            style: VOICE_SETTINGS.style,
+            useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost,
+        },
       });
     } catch (error) {
       console.error("Failed to start call:", error);
+      if(sessionIdRef.current) {
+        endVoiceSession(sessionIdRef.current, 0).catch((endError) =>          console.error("Failed to end voice session after start error:", endError),);
+        sessionIdRef.current = null;
+      }
       setStatus("idle");
       setLimitError("Failed to start voice session. Please try again.");
     }
