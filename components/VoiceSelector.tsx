@@ -10,10 +10,7 @@ const VoiceSelector: FC<VoiceSelectorProps> = ({
   disabled = false,
 }) => {
   const handleVoiceSelect = (voiceKey: string) => {
-    const voice = voiceOptions[voiceKey as keyof typeof voiceOptions];
-    if (voice) {
-      onChange(voice.id);
-    }
+    onChange(voiceKey);
   };
 
   return (
@@ -27,7 +24,7 @@ const VoiceSelector: FC<VoiceSelectorProps> = ({
           {voiceCategories.male.map((voiceKey) => {
             const voice = voiceOptions[voiceKey as keyof typeof voiceOptions];
             if (!voice) return null;
-            const isSelected = voice.id === value;
+            const isSelected = voiceKey === value;
 
             return (
               <button
@@ -61,7 +58,7 @@ const VoiceSelector: FC<VoiceSelectorProps> = ({
         <div className="voice-selector-options">
           {voiceCategories.female.map((voiceKey) => {
             const voice = voiceOptions[voiceKey as keyof typeof voiceOptions];
-            const isSelected = voice.id === value;
+            const isSelected = voiceKey === value;
 
             return (
               <button
