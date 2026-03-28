@@ -28,6 +28,8 @@ const VapiControls = ({ book }: { book: IBook }) => {
     isBillingError,
     maxDurationSeconds,
   } = useVapi(book);
+  const router = useRouter();
+  
   useEffect(() => {
     if (limitError) {
       toast.error(limitError);
