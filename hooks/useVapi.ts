@@ -94,10 +94,18 @@ export function useVapi(book: IBook) {
             setDuration(newDuration);
 
             // Check duration limit
-            if (newDuration >= 15 * 60) { // 15 minutes hardcoded for now
+            // if (newDuration >= 15 * 60) { // 15 minutes hardcoded for now
+            //   getVapi().stop();
+            //   setLimitError(
+            //     `Session time limit (15 minutes) reached. Upgrade your plan for longer sessions.`,
+            //   );
+            // }
+             const maxDuration = maxDurationRef.current;
+            if (newDuration >= maxDuration) {
               getVapi().stop();
+              setIsBillingError(true);
               setLimitError(
-                `Session time limit (15 minutes) reached. Upgrade your plan for longer sessions.`,
+                `Session time limit (${Math.floor(maxDuration / 60)} minutes) reached. Upgrade your plan for longer sessions.`,
               );
             }
           }
