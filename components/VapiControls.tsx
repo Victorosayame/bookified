@@ -28,8 +28,6 @@ const VapiControls = ({ book }: { book: IBook }) => {
     isBillingError,
     maxDurationSeconds,
   } = useVapi(book);
-  const router = useRouter();
-
   useEffect(() => {
     if (limitError) {
       toast.error(limitError);
@@ -37,6 +35,8 @@ const VapiControls = ({ book }: { book: IBook }) => {
         router.push("/subscriptions");
         clearError();
       }
+      // For non-billing errors (timeout, network), stay on page to allow retry
+      // clearError() is called when user clicks mic again (start resets errors)
     }
   }, [isBillingError, limitError, router, clearError]);
 
