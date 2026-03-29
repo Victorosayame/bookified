@@ -4,9 +4,7 @@ import { handleUpload, HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request): Promise<NextResponse> {
-  
   try {
-
     const body = (await request.json()) as HandleUploadBody;
     //form json respone
     const jsonResponse = await handleUpload({
@@ -34,6 +32,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           addRandomSuffix: true, // Optionally add a random suffix to the filename to prevent collisions
           maximumSizeInBytes: MAX_FILE_SIZE, // Example: set a maximum file size limit (e.g., 50MB)
           tokenPayload: JSON.stringify({ userId }),
+          callbackUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/upload`,
         };
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
