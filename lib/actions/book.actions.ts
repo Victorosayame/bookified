@@ -9,16 +9,22 @@ import mongoose from "mongoose";
 
 
 //fetch all book
-export const getAllBooks = async (search?: string) => {
+export const getAllBooks = async (search?: string, clerkId?: string) => {
   try {
     await connectToDatabase();
 
-     let query = {};
+     let query: any = {};
+
+     // If clerkId is provided, only show books uploaded by that user
+     if (clerkId) {
+       query.clerkId = clerkId;
+     }
 
         if (search) {
             const escapedSearch = escapeRegex(search);
             const regex = new RegExp(escapedSearch, 'i');
             query = {
+                ...query,
                 $or: [
                     { title: { $regex: regex } },
                     { author: { $regex: regex } },
