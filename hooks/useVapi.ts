@@ -105,7 +105,19 @@ export function useVapi(book: IBook) {
               getVapi().stop();
               setIsBillingError(true);
               setLimitError(
-                `Session time limit (${Math.floor(maxDuration / 60)} minutes) reached. Upgrade your plan for longer sessions.`,
+                `Session time limit (${Math.floor                // In the error handler, add retry logic for injection errors
+                } else if (errorMessage.includes("injection")) {
+                  // Wait a moment and retry once
+                  setTimeout(() => {
+                    if (!isStoppingRef.current) {
+                      console.log("Retrying after injection error...");
+                      // You could implement a retry mechanism here
+                    }
+                  }, 2000);
+                  setLimitError(
+                    "Session paused for safety. Retrying...",
+                  );
+                  return; // Don't set to idle yet(maxDuration / 60)} minutes) reached. Upgrade your plan for longer sessions.`,
               );
             }
           }
@@ -232,6 +244,10 @@ export function useVapi(book: IBook) {
         ) {
           setLimitError(
             "Connection lost. Please check your internet and try again.",
+          );
+        } else if (errorMessage.includes("injection")) {
+          setLimitError(
+            "Session paused for safety. Please start a new conversation.",
           );
         } else {
           setLimitError(
