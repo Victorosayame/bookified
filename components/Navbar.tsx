@@ -9,6 +9,7 @@ import { Show, UserButton, SignInButton, useUser } from "@clerk/nextjs";
 const navItems = [
   { label: "Library", href: "/" },
   { label: "Add New", href: "/books/new" },
+  { label: "Pricing", href: "/subscriptions" },
 ];
 const Navbar = () => {
   const pathname = usePathname();

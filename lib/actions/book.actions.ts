@@ -6,15 +6,27 @@ import { escapeRegex, generateSlug, serializeData } from "../utils";
 import Book from "@/database/models/book.model";
 import BookSegment from "@/database/models/book-segment.model";
 import mongoose from "mongoose";
-import { revalidatePath } from "next/cache";
 
 
 //fetch all book
-export const getAllBooks = async () => {
+export const getAllBooks = async (search?: string) => {
   try {
     await connectToDatabase();
 
-    const books = await Book.find().sort({ createdAt: -1 }).lean();
+     let query = {};
+
+        if (search) {
+            const escapedSearch = escapeRegex(search);
+            const regex = new RegExp(escapedSearch, 'i');
+            query = {
+                $or: [
+                    { title: { $regex: regex } },
+                    { author: { $regex: regex } },
+                ]
+            };
+        }
+
+    const books = await Book.find(query).sort({ createdAt: -1 }).lean();
     return { success: true, data: serializeData(books) };
   } catch (error) {
     console.error("Error fetching all books", error);
@@ -63,12 +75,36 @@ export const createBook = async (data: CreateBook) => {
     }
 
     //TODO:check sub limit before creating a book
+     const { getUserPlan } = await import("@/lib/subscription.server");
+        const { PLAN_LIMITS } = await import("@/lib/subscription-constants");
 
-    const book = await Book.create({ ...data, slug, totalSegments: 0 });
+        const { auth } = await import("@clerk/nextjs/server");
+        const { userId } = await auth();
 
-    revalidatePath("/");
+        if (!userId || userId !== data.clerkId) {
+            return { success: false, error: "Unauthorized" };
+        }
 
-    
+        const plan = await getUserPlan();
+        const limits = PLAN_LIMITS[plan];
+
+        const bookCount = await Book.countDocuments({ clerkId: userId });
+
+        if (bookCount >= limits.maxBooks) {
+            const { revalidatePath } = await import("next/cache");
+            revalidatePath("/");
+
+            return {
+                success: false,
+                error: `You have reached the maximum number of books allowed for your ${plan} plan (${limits.maxBooks}). Please upgrade to add more books.`,
+                isBillingError: true,
+            };
+        }
+
+
+    const book = await Book.create({ ...data, clerkId: userId, slug, totalSegments: 0 });
+
+
     return { success: true, data: serializeData(book) };
   } catch (error) {
     console.error("Error creating a book", error);

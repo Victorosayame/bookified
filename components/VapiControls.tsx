@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Transcript from "./Transcript";
 import useVapi from "@/hooks/useVapi";
+import { getVoice } from "@/lib/utils";
 
 const VapiControls = ({ book }: { book: IBook }) => {
   const {
@@ -24,22 +25,22 @@ const VapiControls = ({ book }: { book: IBook }) => {
     stop,
     clearError,
     limitError,
-    // isBillingError,
+    isBillingError,
     maxDurationSeconds,
   } = useVapi(book);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (limitError) {
-  //     toast.error(limitError);
-  //     if (isBillingError) {
-  //       router.push("/subscriptions");
-  //     } else {
-  //       router.push("/");
-  //     }
-  //     clearError();
-  //   }
-  // }, [isBillingError, limitError, router, clearError]);
+  
+  useEffect(() => {
+    if (limitError) {
+      toast.error(limitError);
+      if (isBillingError) {
+        router.push("/subscriptions");
+        clearError();
+      }
+      // For non-billing errors (timeout, network), stay on page to allow retry
+      // clearError() is called when user clicks mic again (start resets errors)
+    }
+  }, [isBillingError, limitError, router, clearError]);
 
   const formatDuration = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -87,8 +88,12 @@ const VapiControls = ({ book }: { book: IBook }) => {
               <button
                 onClick={isActive ? stop : start}
                 disabled={status === "connecting"}
-                aria-label={isActive ? "Stop Voice Assistant" : "Start Voice Assistant"}
-                title={isActive ? "Stop Voice Assistant" : "Start Voice Assistant"}
+                aria-label={
+                  isActive ? "Stop Voice Assistant" : "Start Voice Assistant"
+                }
+                title={
+                  isActive ? "Stop Voice Assistant" : "Start Voice Assistant"
+                }
                 className={`vapi-mic-btn shadow-md !w-[60px] !h-[60px] z-10 ${isActive ? "vapi-mic-btn-active" : "vapi-mic-btn-inactive"}`}
               >
                 {isActive ? (
@@ -116,7 +121,7 @@ const VapiControls = ({ book }: { book: IBook }) => {
 
               <div className="vapi-status-indicator">
                 <span className="vapi-status-text">
-                  Voice: {book.persona || "Daniel"}
+                  Voice: {getVoice(book.persona).name}
                 </span>
               </div>
 
