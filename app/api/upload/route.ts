@@ -25,6 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           // You can add custom claims or modify the token payload here if needed.
           allowedContentTypes: [
             "application/pdf",
+            "application/octet-stream",
             "image/jpeg",
             "image/png",
             "image/webp",
@@ -45,6 +46,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         //TODO: POSThung
       },
     });
+
     // You can return any response data here if needed. This will be sent back to the client after the upload is completed.
     return NextResponse.json(jsonResponse);
   } catch (error) {
